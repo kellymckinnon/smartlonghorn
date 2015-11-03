@@ -35,3 +35,6 @@ Thumbs.db
 # Android Studio
 *.iml
 .idea/
+
+# User specific credentials
+login.properties
