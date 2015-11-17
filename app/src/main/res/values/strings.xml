@@ -3,7 +3,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
-    <string name="watson_instance">https://watson-wdc01.ihost.com/instance/540/deepqa/v1/question</string>
+    <string name="watson_instance">https://dal09-gateway.watsonplatform.net/instance/569/deepqa/v1/question</string>
     <string name="recent_questions">Recent questions</string>
     <string name="popular_questions">Popular questions</string>
     <string name="trending_questions">Trending questions</string>
