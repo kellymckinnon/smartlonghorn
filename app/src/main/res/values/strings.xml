@@ -7,6 +7,7 @@
     <string name="recent_questions">Recent questions</string>
     <string name="popular_questions">Popular questions</string>
     <string name="trending_questions">Trending questions</string>
+    <string name="prefs_name">smart_longhorn_prefs</string>
 
 </resources>
 

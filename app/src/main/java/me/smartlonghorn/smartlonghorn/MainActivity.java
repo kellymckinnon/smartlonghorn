@@ -1,6 +1,8 @@
 package me.smartlonghorn.smartlonghorn;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 
@@ -30,12 +33,11 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final int NUM_RECENT_SEARCHES_TO_DISPLAY = 5;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.search_bar)
     AutoCompleteTextView searchBar;
-    @Bind(R.id.recent_questions)
-    Button recentQuestions;
     @Bind(R.id.popular_questions)
     Button popularQuestions;
     @Bind(R.id.trending_questions)
@@ -44,6 +46,11 @@ public class MainActivity extends AppCompatActivity
     NavigationView navigationView;
     @Bind(R.id.drawer_layout)
     DrawerLayout drawer;
+    @Bind(R.id.suggestion_list)
+    ListView suggestionList;
+
+    private ArrayList<String> recentSearches;
+    private ArrayAdapter<String> listAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +78,8 @@ public class MainActivity extends AppCompatActivity
         searchBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, AnswerActivity.class);
-                intent.putExtra("QUESTION", parent.getItemAtPosition(position).toString().toUpperCase());
-                startActivity(intent);
+                String query = parent.getItemAtPosition(position).toString().toUpperCase();
+                askQuestion(query);
             }
         });
 
@@ -81,19 +87,40 @@ public class MainActivity extends AppCompatActivity
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == EditorInfo.IME_ACTION_SEARCH) {
-                    Intent intent = new Intent(MainActivity.this, AnswerActivity.class);
-                    intent.putExtra("QUESTION", searchBar.getText().toString().toUpperCase());
-                    startActivity(intent);
+                    askQuestion(searchBar.getText().toString().toUpperCase());
                     return true;
                 }
                 return false;
             }
         });
 
-        recentQuestions.setOnClickListener(new View.OnClickListener() {
+        SharedPreferences recentFile = getSharedPreferences(
+                getString(R.string.prefs_name),
+                Context.MODE_PRIVATE);
+        recentSearches = new ArrayList<>();
+
+        // Recent searches are stored as search0, search1, search2, etc
+        for (int i = 0; i < NUM_RECENT_SEARCHES_TO_DISPLAY; i++) {
+            if (recentFile.contains("search" + i)) {
+                String query = recentFile.getString("search" + i, "");
+                recentSearches.add(query);
+            }
+        }
+
+        // Populate list with recent searches
+        listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        suggestionList.setAdapter(listAdapter);
+        listAdapter.addAll(recentSearches);
+//
+//        if (recentSearches.isEmpty()) {
+//            noRecentSearchesText.setVisibility(View.VISIBLE);
+//            suggestionList.setVisibility(View.GONE);
+//        }
+
+        suggestionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                //TODO: Open recent questions activity
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                askQuestion((String) suggestionList.getItemAtPosition(position));
             }
         });
 
@@ -166,5 +193,30 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * Launch a new activity that asks the inputted question to Watson.
+     *
+     * @param query query to send to Watson
+     */
+    private void askQuestion(String query) {
+        SharedPreferences recentFile = getSharedPreferences(
+                getString(R.string.prefs_name),
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = recentFile.edit();
+
+        // Push all previous searches back one in the list
+        for (int i = 0; i < recentSearches.size(); i++) {
+            editor.putString("search" + (i + 1), recentSearches.get(i));
+        }
+
+        // Insert the most recent (current) search
+        editor.putString("search" + 0, query);
+        editor.apply();
+
+        Intent intent = new Intent(MainActivity.this, AnswerActivity.class);
+        intent.putExtra("QUESTION", query);
+        startActivity(intent);
     }
 }
