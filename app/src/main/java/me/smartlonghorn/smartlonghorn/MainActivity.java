@@ -127,7 +127,8 @@ public class MainActivity extends AppCompatActivity
         popularQuestions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: Open popular questions activity
+                Intent intent = new Intent(MainActivity.this, PopularQuestionsActivity.class);
+                startActivity(intent);
             }
         });
 

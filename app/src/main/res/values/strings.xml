@@ -8,6 +8,38 @@
     <string name="popular_questions">Popular questions</string>
     <string name="trending_questions">Trending questions</string>
     <string name="prefs_name">smart_longhorn_prefs</string>
+    <string-array name="categories">
+        <item>Admissions</item>
+        <item>Tuition and Financial Aid</item>
+        <item>Health and Wellness</item>
+        <item>Housing</item>
+        <item>Safety</item>
+    </string-array>
+
+    <string-array name="admissions">
+        <item>How do I apply to UT?</item>
+        <item>What is the deadline for applying to UT?</item>
+    </string-array>
+
+    <string-array name="financial_aid">
+        <item>How do I apply for financial aid?</item>
+        <item>What is the cost of undergraduate tuition?</item>
+    </string-array>
+
+    <string-array name="health">
+        <item>Where is the pharmacy on campus?</item>
+        <item>Who can I contact if I am feeling depressed?</item>
+    </string-array>
+
+    <string-array name="housing">
+        <item>What is Jester West?</item>
+        <item>Where is Kinsolving?</item>
+    </string-array>
+
+    <string-array name="safety">
+        <item>Safety question 1</item>
+        <item>Safety question 2</item>
+    </string-array>
 
 </resources>
 
