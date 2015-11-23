@@ -1,11 +1,18 @@
 package me.smartlonghorn.smartlonghorn;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -19,8 +26,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -32,13 +44,26 @@ import butterknife.ButterKnife;
 
 public class AnswerActivity extends AppCompatActivity {
 
-    @Bind(R.id.best_answer)
-    TextView bestAnswer; // TODO convert to list of 3
+    private static final int NUM_RESPONSES_TO_DISPLAY = 3;
+    @Bind(R.id.answer_list)
+    ListView answerList;
     @Bind(R.id.question_text)
     TextView questionText;
+    @Bind(R.id.bad_answers)
+    Button badAnswerButton;
+    @Bind(R.id.error_message)
+    TextView errorText;
+    @Bind(R.id.no_answer)
+    TextView noAnswerText;
+    @Bind(R.id.failure_rephrase_button)
+    Button failureRephraseButton;
+    @Bind(R.id.failure_view_popular_button)
+    Button failureViewPopularButton;
+    @Bind(R.id.failure_search_site)
+    Button failureSearchSite;
     private String mWatsonQueryString = "";
     private String TAG;
-    private String mWatsonAnswerString;
+    private ArrayAdapter<String> listAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +74,71 @@ public class AnswerActivity extends AppCompatActivity {
 
         mWatsonQueryString = getIntent().getStringExtra("QUESTION");
         questionText.setText(mWatsonQueryString);
+
+        badAnswerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                displayNoAnswersUI();
+                Snackbar.make(badAnswerButton, "Thanks! Your feedback has been received.", Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        answerList.setAdapter(listAdapter);
+
         new WatsonQuery().execute();
     }
 
-    private void showErrorMessage() {
-        // TODO: Show a consistent message for server errors, connection errors, etc.
-        // THIS IS NOT CALLED BC OF A BAD ANSWER. ONLY WHEN SOMETHING GOES WRONG. OR I
-        // GUESS IF THERE ARE NO ANSWERS PROVIDED... NOT SURE IF WATSON WILL DO THAT
+    /**
+     * If no answers are found (or the user deems them all unhelpful), an apology message
+     * displays with alternate options to try (rephrase, view popular, search website)
+     */
+    private void displayNoAnswersUI() {
+        answerList.setVisibility(View.GONE);
+        badAnswerButton.setVisibility(View.GONE);
 
-        bestAnswer.setText("Sorry, something went wrong. Please try again.");
+        noAnswerText.setVisibility(View.VISIBLE);
+        failureRephraseButton.setVisibility(View.VISIBLE);
+        failureRephraseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        failureSearchSite.setVisibility(View.VISIBLE);
+        failureSearchSite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = null;
+                try {
+                    browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.utexas.edu/search/results.php?q=" + URLEncoder.encode((mWatsonQueryString), "UTF-8")));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                startActivity(browserIntent);
+            }
+        });
+
+        failureViewPopularButton.setVisibility(View.VISIBLE);
+        failureViewPopularButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AnswerActivity.this, PopularQuestionsActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    /**
+     * If there is an error connecting to Watson (server error or network connection error),
+     * display the same choices as if none of the answers were good, but different text above it.
+     */
+    private void showErrorMessage() {
+        displayNoAnswersUI();
+
+        noAnswerText.setVisibility(View.GONE);
+        errorText.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -85,17 +166,17 @@ public class AnswerActivity extends AppCompatActivity {
          */
         final TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
             @Override
-            public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
+            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 
             }
 
             @Override
-            public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
+            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
 
             }
 
-            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                return new java.security.cert.X509Certificate[]{};
+            public X509Certificate[] getAcceptedIssuers() {
+                return new X509Certificate[]{};
             }
         }};
         private SSLContext context;
@@ -116,7 +197,7 @@ public class AnswerActivity extends AppCompatActivity {
             // TODO: Figure out how to make this secure? Maybe?
             try {
                 context = SSLContext.getInstance("TLS");
-                context.init(null, trustAllCerts, new java.security.SecureRandom());
+                context.init(null, trustAllCerts, new SecureRandom());
             } catch (KeyManagementException | NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
@@ -184,23 +265,41 @@ public class AnswerActivity extends AppCompatActivity {
             }
 
             JSONObject watsonResponse;
+            ArrayList<String> responses = new ArrayList<>();
+
+            // TODO use the scores somehow. # b/w 0 and 1, higher is better
+            ArrayList<Double> scores = new ArrayList<>();
             try {
                 watsonResponse = new JSONObject(json);
                 JSONObject question = watsonResponse.getJSONObject("question");
                 JSONArray evidenceArray = question.getJSONArray("evidencelist");
-                JSONObject mostLikelyValue = evidenceArray.getJSONObject(0);
-                mWatsonAnswerString = mostLikelyValue.get("text").toString();
 
-                // TODO: Figure out how this works. The first answer was blank so it
-                // hit the catch block. The second answer was there, but at .06% certainty
-                // (this is for "Where is Jester located").
+                for (int i = 0; i < evidenceArray.length(); i++) {
+                    JSONObject responseObject = evidenceArray.getJSONObject(i);
 
+                    if (responseObject.length() == 0) {
+                        // Don't do anything, there are random blank answers provided... -_-
+                        continue;
+                    }
+
+                    responses.add(responseObject.getString("text"));
+                    scores.add(Double.parseDouble(responseObject.getString("value")));
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
                 showErrorMessage();
             }
 
-            bestAnswer.setText(mWatsonAnswerString);
+            // TODO: Find the proper interval to reject all answers
+            if (scores.isEmpty() || scores.get(0) < .3) {
+                displayNoAnswersUI();
+            }
+
+            for (int i = 0; i < Math.min(NUM_RESPONSES_TO_DISPLAY, responses.size()); i++) {
+                listAdapter.add(responses.get(i));
+            }
+
+            listAdapter.notifyDataSetChanged();
         }
     }
 
