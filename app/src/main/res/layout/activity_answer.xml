@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -13,21 +18,115 @@
         android:id="@+id/question_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
-    <ListView
-        android:id="@+id/answer_list"
+        <android.support.v7.widget.CardView
+            android:id="@+id/card1"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="8.5" />
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:visibility="gone">
 
-    <Button
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="TOP RESPONSE"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/response_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:textColor="@android:color/secondary_text_light"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ADDITIONAL CONSIDERATION"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/response_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:textColor="@android:color/secondary_text_light"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ADDITIONAL CONSIDERATION"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/response_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="5dp"
+                    android:textColor="@android:color/secondary_text_light"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+        <Button
         android:id="@+id/bad_answers"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
         android:layout_weight="1"
-        android:text="I didn't find an answer to my question" />
+            android:text="I didn't find an answer to my question"
+            android:textColor="@android:color/white"
+            android:visibility="gone" />
 
     <TextView
         android:id="@+id/error_message"
@@ -50,6 +149,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="Rephrase question"
+        android:textColor="@android:color/white"
         android:visibility="gone" />
 
     <Button
@@ -58,6 +158,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="View popular questions"
+        android:textColor="@android:color/white"
         android:visibility="gone" />
 
     <Button
@@ -66,6 +167,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="Search on utexas.edu"
+        android:textColor="@android:color/white"
         android:visibility="gone" />
 
 </LinearLayout>
+</ScrollView>

@@ -3,6 +3,7 @@ package me.smartlonghorn.smartlonghorn;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,9 +14,11 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
 
@@ -32,13 +35,15 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.search_bar)
-    AutoCompleteTextView searchBar;
+    MaterialEditText searchBar;
     @Bind(R.id.popular_questions)
     Button popularQuestions;
     @Bind(R.id.trending_questions)
     Button trendingQuestions;
     @Bind(R.id.suggestion_list)
     ListView suggestionList;
+    @Bind(R.id.logo_title)
+    TextView title;
 
     private ArrayList<String> recentSearches;
 
@@ -54,17 +59,6 @@ public class MainActivity extends AppCompatActivity {
         questionList.add("What time does the PCL close?");
         questionList.add("How do I drop a class?");
         questionList.add("Where is Jester located?");
-
-        searchBar.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, questionList));
-        searchBar.setThreshold(2); // Number of characters necessary before displaying suggestions
-        searchBar.setHint("Enter a question.");
-        searchBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String query = parent.getItemAtPosition(position).toString().toUpperCase();
-                askQuestion(query);
-            }
-        });
 
         searchBar.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -99,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
 //            noRecentSearchesText.setVisibility(View.VISIBLE);
 //            suggestionList.setVisibility(View.GONE);
 //        }
+
+        Typeface tf = Typeface.createFromAsset(getAssets(), "Pacifico.ttf");
+        title.setTypeface(tf);
 
         suggestionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

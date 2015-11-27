@@ -7,12 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -45,8 +44,6 @@ import butterknife.ButterKnife;
 public class AnswerActivity extends AppCompatActivity {
 
     private static final int NUM_RESPONSES_TO_DISPLAY = 3;
-    @Bind(R.id.answer_list)
-    ListView answerList;
     @Bind(R.id.question_text)
     TextView questionText;
     @Bind(R.id.bad_answers)
@@ -61,9 +58,20 @@ public class AnswerActivity extends AppCompatActivity {
     Button failureViewPopularButton;
     @Bind(R.id.failure_search_site)
     Button failureSearchSite;
+    @Bind(R.id.card1)
+    CardView cardOne;
+    @Bind(R.id.card2)
+    CardView cardTwo;
+    @Bind(R.id.card3)
+    CardView cardThree;
+    @Bind(R.id.response_1)
+    TextView responseOne;
+    @Bind(R.id.response_2)
+    TextView responseTwo;
+    @Bind(R.id.response_3)
+    TextView responseThree;
     private String mWatsonQueryString = "";
     private String TAG;
-    private ArrayAdapter<String> listAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,9 +91,6 @@ public class AnswerActivity extends AppCompatActivity {
             }
         });
 
-        listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        answerList.setAdapter(listAdapter);
-
         new WatsonQuery().execute();
     }
 
@@ -94,9 +99,11 @@ public class AnswerActivity extends AppCompatActivity {
      * displays with alternate options to try (rephrase, view popular, search website)
      */
     private void displayNoAnswersUI() {
-        answerList.setVisibility(View.GONE);
         badAnswerButton.setVisibility(View.GONE);
-
+        cardOne.setVisibility(View.GONE);
+        cardTwo.setVisibility(View.GONE);
+        cardThree.setVisibility(View.GONE);
+        
         noAnswerText.setVisibility(View.VISIBLE);
         failureRephraseButton.setVisibility(View.VISIBLE);
         failureRephraseButton.setOnClickListener(new View.OnClickListener() {
@@ -276,12 +283,10 @@ public class AnswerActivity extends AppCompatActivity {
 
                 for (int i = 0; i < evidenceArray.length(); i++) {
                     JSONObject responseObject = evidenceArray.getJSONObject(i);
-
                     if (responseObject.length() == 0) {
                         // Don't do anything, there are random blank answers provided... -_-
                         continue;
                     }
-
                     responses.add(responseObject.getString("text"));
                     scores.add(Double.parseDouble(responseObject.getString("value")));
                 }
@@ -293,14 +298,26 @@ public class AnswerActivity extends AppCompatActivity {
             // TODO: Find the proper interval to reject all answers
             if (scores.isEmpty() || scores.get(0) < .3) {
                 displayNoAnswersUI();
-            }
+            } else {
+                badAnswerButton.setVisibility(View.VISIBLE);
 
-            for (int i = 0; i < Math.min(NUM_RESPONSES_TO_DISPLAY, responses.size()); i++) {
-                listAdapter.add(responses.get(i));
+                for (int i = 0; i < Math.min(NUM_RESPONSES_TO_DISPLAY, responses.size()); i++) {
+                    switch (i) {
+                        case 0:
+                            responseOne.setText(responses.get(i));
+                            cardOne.setVisibility(View.VISIBLE);
+                            break;
+                        case 1:
+                            responseTwo.setText(responses.get(i));
+                            cardTwo.setVisibility(View.VISIBLE);
+                            break;
+                        case 2:
+                            responseThree.setText(responses.get(i));
+                            cardThree.setVisibility(View.VISIBLE);
+                            break;
+                    }
+                }
             }
-
-            listAdapter.notifyDataSetChanged();
         }
     }
-
 }
