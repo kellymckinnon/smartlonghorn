@@ -7,26 +7,27 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin">
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
 
-    <TextView
-        android:id="@+id/question_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/question_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:textAllCaps="true"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/card1"
-        android:layout_width="match_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:visibility="gone">
@@ -40,13 +41,14 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="TOP RESPONSE"
+                    android:text="@string/top_response_header"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/response_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autoLink="all"
                     android:paddingTop="5dp"
                     android:textColor="@android:color/secondary_text_light"
                     android:textSize="14sp" />
@@ -71,13 +73,14 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="ADDITIONAL CONSIDERATION"
+                    android:text="@string/secondary_response_header"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/response_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autoLink="all"
                     android:paddingTop="5dp"
                     android:textColor="@android:color/secondary_text_light"
                     android:textSize="14sp" />
@@ -102,13 +105,14 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="ADDITIONAL CONSIDERATION"
+                    android:text="@string/secondary_response_header"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/response_3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autoLink="all"
                     android:paddingTop="5dp"
                     android:textColor="@android:color/secondary_text_light"
                     android:textSize="14sp" />
@@ -119,56 +123,57 @@
         </android.support.v7.widget.CardView>
 
         <Button
-        android:id="@+id/bad_answers"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        android:layout_weight="1"
-            android:text="I didn't find an answer to my question"
+            android:id="@+id/bad_answers"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:text="@string/no_helpful_answer_button_text"
             android:textColor="@android:color/white"
             android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/error_message"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:text="There was an error with your request. Please check your network connection, or try one of the below alternatives."
-        android:visibility="gone" />
+        <TextView
+            android:id="@+id/error_message"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="@string/server_error"
+            android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/no_answer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sorry, no answer found! New information is constantly being processed, so check back soon."
-        android:visibility="gone" />
+        <TextView
+            android:id="@+id/no_answer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="@string/no_answer_found"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/failure_rephrase_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Rephrase question"
-        android:textColor="@android:color/white"
-        android:visibility="gone" />
+        <Button
+            android:id="@+id/failure_rephrase_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/error_rephrase"
+            android:textColor="@color/colorPrimaryDark"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/failure_view_popular_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="View popular questions"
-        android:textColor="@android:color/white"
-        android:visibility="gone" />
+        <Button
+            android:id="@+id/failure_view_popular_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/error_view_popular"
+            android:textColor="@color/colorPrimaryDark"
+            android:visibility="gone" />
 
-    <Button
-        android:id="@+id/failure_search_site"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Search on utexas.edu"
-        android:textColor="@android:color/white"
-        android:visibility="gone" />
+        <Button
+            android:id="@+id/failure_search_site"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/error_search_site"
+            android:textColor="@color/colorPrimaryDark"
+            android:visibility="gone" />
 
-</LinearLayout>
+    </LinearLayout>
 </ScrollView>

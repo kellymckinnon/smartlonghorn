@@ -15,10 +15,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:text="Smart  Longhorn"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="40sp" />
+        android:textSize="36sp" />
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
         android:layout_margin="5dp">
 
         <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/search_bar"
+            android:id="@+id/query_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -34,8 +34,8 @@
             android:layout_marginRight="8dp"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:hint="What do you need help with?"
-            android:imeOptions="actionSearch"
+            android:hint="@string/input_hint"
+            android:imeOptions="actionGo"
             android:inputType="text"
             android:singleLine="true" />
     </android.support.v7.widget.CardView>
@@ -54,8 +54,10 @@
                 android:id="@+id/suggestion_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="Recent Searches"
+                android:paddingEnd="8dp"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:text="@string/recent_questions"
                 android:textAllCaps="true"
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />
@@ -65,26 +67,52 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/no_recent_questions_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/no_recent_queries"
+                android:visibility="gone" />
 
+            <TextView
+                android:id="@+id/no_suggestions_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/no_suggestions_found"
+                android:visibility="gone" />
+
+        </LinearLayout>
 
     </android.support.v7.widget.CardView>
 
-    <Button
-        android:id="@+id/popular_questions"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="5dp"
-        android:text="@string/popular_questions"
-        android:textColor="@android:color/white" />
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/trending_questions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="5dp"
-        android:text="@string/trending_questions"
-        android:textColor="@android:color/white" />
+        <Button
+            android:id="@+id/popular_questions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/popular_questions"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/trending_questions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/trending_questions"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
 </LinearLayout>

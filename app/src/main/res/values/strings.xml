@@ -2,9 +2,28 @@
     <string name="app_name">Smart Longhorn</string>
     <string name="action_settings">Settings</string>
     <string name="watson_instance">https://dal09-gateway.watsonplatform.net/instance/569/deepqa/v1/question</string>
-    <string name="popular_questions">Frequently asked questions</string>
+    <string name="popular_questions">Popular questions</string>
     <string name="trending_questions">Trending questions</string>
     <string name="prefs_name">smart_longhorn_prefs</string>
+    <string name="recent_questions">Recent Questions</string>
+    <string name="no_recent_queries">You haven\'t asked anything yet! Need ideas? Start typing for suggestions, or try one of the buttons below.</string>
+    <string name="no_suggestions_found">No suggestions found. You\'re original! Go ahead and ask anyway, or find more suggestions with the buttons below.</string>
+    <string name="suggested_questions">Suggested Questions</string>
+    <string name="algolia_app_id">CEW04K8JZ5</string>
+    <string name="algolia_public_key">c5175ec8f296b5e18deec3aa852820ee</string>
+    <string name="algolia_table_name">smartlonghorn</string>
+    <string name="logo_font">Pacifico.ttf</string>
+    <string name="top_response_header">TOP RESPONSE</string>
+    <string name="secondary_response_header">ADDITIONAL CONSIDERATION</string>
+    <string name="no_helpful_answer_button_text">I didn\'t find an answer to my question</string>
+    <string name="server_error">There was an error with your request. Please check your network connection, or try one of the below alternatives.</string>
+    <string name="no_answer_found">Sorry, no answer found! New information is constantly being processed, so check back soon.</string>
+    <string name="error_rephrase">Rephrase question</string>
+    <string name="error_view_popular">View popular questions</string>
+    <string name="error_search_site">Search on utexas.edu</string>
+    <string name="input_hint">What do you need help with?</string>
+    <string name="feedback_received_snackbar">Thanks! Your feedback has been received.</string>
+    <string name="utexas_search_url">http://www.utexas.edu/search/results.php?q=</string>
     <string-array name="categories">
         <item>Admissions</item>
         <item>Tuition and Financial Aid</item>

@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.text.util.Linkify;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -87,7 +88,7 @@ public class AnswerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 displayNoAnswersUI();
-                Snackbar.make(badAnswerButton, "Thanks! Your feedback has been received.", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(badAnswerButton, R.string.feedback_received_snackbar, Snackbar.LENGTH_LONG).show();
             }
         });
 
@@ -119,7 +120,7 @@ public class AnswerActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent browserIntent = null;
                 try {
-                    browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.utexas.edu/search/results.php?q=" + URLEncoder.encode((mWatsonQueryString), "UTF-8")));
+                    browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.utexas_search_url) + URLEncoder.encode((mWatsonQueryString), "UTF-8")));
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
@@ -274,7 +275,6 @@ public class AnswerActivity extends AppCompatActivity {
             JSONObject watsonResponse;
             ArrayList<String> responses = new ArrayList<>();
 
-            // TODO use the scores somehow. # b/w 0 and 1, higher is better
             ArrayList<Double> scores = new ArrayList<>();
             try {
                 watsonResponse = new JSONObject(json);
@@ -296,7 +296,7 @@ public class AnswerActivity extends AppCompatActivity {
             }
 
             // TODO: Find the proper interval to reject all answers
-            if (scores.isEmpty() || scores.get(0) < .3) {
+            if (scores.isEmpty() || scores.get(0) < .1) {
                 displayNoAnswersUI();
             } else {
                 badAnswerButton.setVisibility(View.VISIBLE);
@@ -304,14 +304,17 @@ public class AnswerActivity extends AppCompatActivity {
                 for (int i = 0; i < Math.min(NUM_RESPONSES_TO_DISPLAY, responses.size()); i++) {
                     switch (i) {
                         case 0:
+                            Linkify.addLinks(responseOne, Linkify.MAP_ADDRESSES);
                             responseOne.setText(responses.get(i));
                             cardOne.setVisibility(View.VISIBLE);
                             break;
                         case 1:
+                            Linkify.addLinks(responseTwo, Linkify.MAP_ADDRESSES);
                             responseTwo.setText(responses.get(i));
                             cardTwo.setVisibility(View.VISIBLE);
                             break;
                         case 2:
+                            Linkify.addLinks(responseThree, Linkify.MAP_ADDRESSES);
                             responseThree.setText(responses.get(i));
                             cardThree.setVisibility(View.VISIBLE);
                             break;
