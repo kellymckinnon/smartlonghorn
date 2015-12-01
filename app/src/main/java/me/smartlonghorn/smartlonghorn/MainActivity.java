@@ -28,6 +28,7 @@ import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
 import com.algolia.search.saas.listeners.SearchListener;
+import com.parse.ParseAnalytics;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
@@ -35,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -87,7 +89,14 @@ public class MainActivity extends AppCompatActivity implements SearchListener {
                 }
 
                 if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == EditorInfo.IME_ACTION_GO) {
-                    askQuestion(searchBar.getText().toString());
+                    String query = searchBar.getText().toString();
+
+                    HashMap<String, String> dimensions = new HashMap<>();
+                    dimensions.put("query", query);
+                    dimensions.put("source", "enter_key");
+                    ParseAnalytics.trackEventInBackground("question", dimensions);
+
+                    askQuestion(query);
                     return true;
                 }
                 return false;
@@ -146,7 +155,12 @@ public class MainActivity extends AppCompatActivity implements SearchListener {
         suggestionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                askQuestion(suggestionList.getItemAtPosition(position).toString());
+                String query = suggestionList.getItemAtPosition(position).toString();
+                HashMap<String, String> dimensions = new HashMap<>();
+                dimensions.put("query", query);
+                dimensions.put("source", "suggestion_clicked");
+                ParseAnalytics.trackEventInBackground("question", dimensions);
+                askQuestion(query);
             }
         });
 
@@ -155,13 +169,6 @@ public class MainActivity extends AppCompatActivity implements SearchListener {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, PopularQuestionsActivity.class);
                 startActivity(intent);
-            }
-        });
-
-        trendingQuestions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: Open trending/seasonal questions activity
             }
         });
     }

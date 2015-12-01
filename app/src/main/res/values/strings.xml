@@ -14,7 +14,7 @@
     <string name="algolia_table_name">smartlonghorn</string>
     <string name="logo_font">Pacifico.ttf</string>
     <string name="top_response_header">TOP RESPONSE</string>
-    <string name="secondary_response_header">ADDITIONAL CONSIDERATION</string>
+    <string name="secondary_response_header">ADDITIONAL INFORMATION</string>
     <string name="no_helpful_answer_button_text">I didn\'t find an answer to my question</string>
     <string name="server_error">There was an error with your request. Please check your network connection, or try one of the below alternatives.</string>
     <string name="no_answer_found">Sorry, no answer found! New information is constantly being processed, so check back soon.</string>
@@ -24,39 +24,8 @@
     <string name="input_hint">What do you need help with?</string>
     <string name="feedback_received_snackbar">Thanks! Your feedback has been received.</string>
     <string name="utexas_search_url">http://www.utexas.edu/search/results.php?q=</string>
-    <string-array name="categories">
-        <item>Admissions</item>
-        <item>Tuition and Financial Aid</item>
-        <item>Health and Wellness</item>
-        <item>Housing</item>
-        <item>Safety</item>
-    </string-array>
-
-    <string-array name="admissions">
-        <item>How do I apply to UT?</item>
-        <item>What is the deadline for applying to UT?</item>
-    </string-array>
-
-    <string-array name="financial_aid">
-        <item>How do I apply for financial aid?</item>
-        <item>What is the cost of undergraduate tuition?</item>
-    </string-array>
-
-    <string-array name="health">
-        <item>Where is the pharmacy on campus?</item>
-        <item>Who can I contact if I am feeling depressed?</item>
-    </string-array>
-
-    <string-array name="housing">
-        <item>What is Jester West?</item>
-        <item>Where is Kinsolving?</item>
-    </string-array>
-
-    <string-array name="safety">
-        <item>Safety question 1</item>
-        <item>Safety question 2</item>
-    </string-array>
-
+    <string name="parse_appid">i0vtuih80OXc1eIe0XM60BISojDAelXTBdH5mRWH</string>
+    <string name="parse_clientkey">xBlkoGnotHkQPBfGIdO8hY3LjbaNctqcFAm8h6lb</string>
 </resources>
 
 

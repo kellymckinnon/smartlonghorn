@@ -8,6 +8,11 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.Base64;
 import android.util.Log;
@@ -104,7 +109,7 @@ public class AnswerActivity extends AppCompatActivity {
         cardOne.setVisibility(View.GONE);
         cardTwo.setVisibility(View.GONE);
         cardThree.setVisibility(View.GONE);
-        
+
         noAnswerText.setVisibility(View.VISIBLE);
         failureRephraseButton.setVisibility(View.VISIBLE);
         failureRephraseButton.setOnClickListener(new View.OnClickListener() {
@@ -167,11 +172,6 @@ public class AnswerActivity extends AppCompatActivity {
     }
 
     class WatsonQuery extends AsyncTask<Void, Integer, String> {
-
-        /*
-         *  Accepts all HTTPS certs. Do NOT use in production!!!
-         *  // TODO look into this more, keeping it for now
-         */
         final TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
             @Override
             public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
@@ -200,9 +200,6 @@ public class AnswerActivity extends AppCompatActivity {
         protected
         @Nullable
         String doInBackground(Void... ignore) {
-
-            // establish SSL trust (insecure for demo)
-            // TODO: Figure out how to make this secure? Maybe?
             try {
                 context = SSLContext.getInstance("TLS");
                 context.init(null, trustAllCerts, new SecureRandom());
@@ -217,7 +214,6 @@ public class AnswerActivity extends AppCompatActivity {
                 connection.setSSLSocketFactory(context.getSocketFactory());
                 connection.setRequestMethod("POST");
                 connection.setDoOutput(true);
-                connection.setUseCaches(false);
                 connection.setConnectTimeout(timeoutConnection);
                 connection.setReadTimeout(timeoutConnection);
 
@@ -226,10 +222,9 @@ public class AnswerActivity extends AppCompatActivity {
                 connection.setRequestProperty("Accept", "application/json");
                 connection.setRequestProperty("Authorization", "Basic " + getEncodedCredentials());
                 connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Cache-Control", "no-cache");
 
                 OutputStream out = connection.getOutputStream();
-                String query = "{\"question\": {\"questionText\": \"" + mWatsonQueryString + "\"}}";
+                String query = "{\"question\": {\"formattedAnswer\": true, \"questionText\": \"" + mWatsonQueryString + "\", \"items\": 5}}";
                 out.write(query.getBytes());
                 out.close();
 
@@ -239,7 +234,6 @@ public class AnswerActivity extends AppCompatActivity {
                     Log.i(TAG, "Server Response Code: " + Integer.toString(responseCode));
 
                     if (responseCode != 200) {
-                        showErrorMessage();
                         return null;
                     }
 
@@ -259,7 +253,6 @@ public class AnswerActivity extends AppCompatActivity {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
-                showErrorMessage();
             }
 
             return jsonData; // Will be null if error occurred
@@ -279,16 +272,18 @@ public class AnswerActivity extends AppCompatActivity {
             try {
                 watsonResponse = new JSONObject(json);
                 JSONObject question = watsonResponse.getJSONObject("question");
-                JSONArray evidenceArray = question.getJSONArray("evidencelist");
+                JSONArray evidenceArray = question.getJSONArray("answers");
+
+                Log.d(TAG, "Answers: " + evidenceArray.toString(1));
 
                 for (int i = 0; i < evidenceArray.length(); i++) {
                     JSONObject responseObject = evidenceArray.getJSONObject(i);
-                    if (responseObject.length() == 0) {
+                    if (responseObject.length() == 0 || responseObject.getString("text").equals("${noAnswer}")) {
                         // Don't do anything, there are random blank answers provided... -_-
                         continue;
                     }
-                    responses.add(responseObject.getString("text"));
-                    scores.add(Double.parseDouble(responseObject.getString("value")));
+                    responses.add(responseObject.getString("formattedText"));
+                    scores.add(Double.parseDouble(responseObject.getString("confidence")));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -302,20 +297,37 @@ public class AnswerActivity extends AppCompatActivity {
                 badAnswerButton.setVisibility(View.VISIBLE);
 
                 for (int i = 0; i < Math.min(NUM_RESPONSES_TO_DISPLAY, responses.size()); i++) {
+                    String response = responses.get(i);
+
+                    // Remove the (not necessarily relevant and very large) header on each answer
+                    response = response.substring(response.indexOf("</h1>") + 6).replace("<span>\n</span>", "");
+                    Spanned text = Html.fromHtml(response);
+                    URLSpan[] currentSpans = text.getSpans(0, text.length(), URLSpan.class);
+
+                    // Get rid of extra newlines that result from Html.fromHtml()
+                    SpannableString buffer = new SpannableString(Utility.trimTrailingWhitespace(text));
+
+                    // Part 1 of workaround to make both href and regular links/phone #s/etc. clickable
+                    Linkify.addLinks(buffer, Linkify.ALL);
+                    for (URLSpan span : currentSpans) {
+                        int end = text.getSpanEnd(span);
+                        int start = text.getSpanStart(span);
+                        buffer.setSpan(span, start, end, 0);
+                    }
                     switch (i) {
                         case 0:
-                            Linkify.addLinks(responseOne, Linkify.MAP_ADDRESSES);
-                            responseOne.setText(responses.get(i));
+                            responseOne.setText(buffer);
+                            responseOne.setMovementMethod(LinkMovementMethod.getInstance()); // Part 2 of above workaround
                             cardOne.setVisibility(View.VISIBLE);
                             break;
                         case 1:
-                            Linkify.addLinks(responseTwo, Linkify.MAP_ADDRESSES);
-                            responseTwo.setText(responses.get(i));
+                            responseTwo.setText(buffer);
+                            responseTwo.setMovementMethod(LinkMovementMethod.getInstance());
                             cardTwo.setVisibility(View.VISIBLE);
                             break;
                         case 2:
-                            Linkify.addLinks(responseThree, Linkify.MAP_ADDRESSES);
-                            responseThree.setText(responses.get(i));
+                            responseThree.setText(buffer);
+                            responseThree.setMovementMethod(LinkMovementMethod.getInstance());
                             cardThree.setVisibility(View.VISIBLE);
                             break;
                     }
