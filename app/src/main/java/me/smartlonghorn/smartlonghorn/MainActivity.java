@@ -28,7 +28,6 @@ import com.algolia.search.saas.AlgoliaException;
 import com.algolia.search.saas.Index;
 import com.algolia.search.saas.Query;
 import com.algolia.search.saas.listeners.SearchListener;
-import com.parse.ParseAnalytics;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
@@ -36,7 +35,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -55,8 +53,6 @@ public class MainActivity extends AppCompatActivity implements SearchListener {
     MaterialEditText searchBar;
     @Bind(R.id.popular_questions)
     Button popularQuestions;
-    @Bind(R.id.trending_questions)
-    Button trendingQuestions;
     @Bind(R.id.suggestion_list)
     ListView suggestionList;
     @Bind(R.id.logo_title)
@@ -90,12 +86,7 @@ public class MainActivity extends AppCompatActivity implements SearchListener {
 
                 if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == EditorInfo.IME_ACTION_GO) {
                     String query = searchBar.getText().toString();
-
-                    HashMap<String, String> dimensions = new HashMap<>();
-                    dimensions.put("query", query);
-                    dimensions.put("source", "enter_key");
-                    ParseAnalytics.trackEventInBackground("question", dimensions);
-
+                    Utility.logQuestionAsked(query, Utility.SOURCE_ENTER_KEY);
                     askQuestion(query);
                     return true;
                 }
@@ -156,10 +147,7 @@ public class MainActivity extends AppCompatActivity implements SearchListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String query = suggestionList.getItemAtPosition(position).toString();
-                HashMap<String, String> dimensions = new HashMap<>();
-                dimensions.put("query", query);
-                dimensions.put("source", "suggestion_clicked");
-                ParseAnalytics.trackEventInBackground("question", dimensions);
+                Utility.logQuestionAsked(query, Utility.SOURCE_AUTOCOMPLETE);
                 askQuestion(query);
             }
         });
@@ -226,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements SearchListener {
         editor.apply();
 
         Intent intent = new Intent(MainActivity.this, AnswerActivity.class);
-        intent.putExtra("QUESTION", query);
+        intent.putExtra(Utility.QUESTION_EXTRA, query);
         startActivity(intent);
     }
 

@@ -110,8 +110,10 @@ public class PopularQuestionsActivity extends AppCompatActivity {
                 editor.putString("search" + 0, question);
                 editor.apply();
 
+                Utility.logQuestionAsked(question, Utility.SOURCE_POPULAR);
+
                 Intent intent = new Intent(PopularQuestionsActivity.this, AnswerActivity.class);
-                intent.putExtra("QUESTION", question);
+                intent.putExtra(Utility.QUESTION_EXTRA, question);
                 startActivity(intent);
 
                 return true;

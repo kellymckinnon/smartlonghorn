@@ -78,6 +78,7 @@ public class AnswerActivity extends AppCompatActivity {
     TextView responseThree;
     private String mWatsonQueryString = "";
     private String TAG;
+    private ArrayList<String> responseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +87,10 @@ public class AnswerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_answer);
         ButterKnife.bind(this);
 
-        mWatsonQueryString = getIntent().getStringExtra("QUESTION");
+        mWatsonQueryString = getIntent().getStringExtra(Utility.QUESTION_EXTRA);
         questionText.setText(mWatsonQueryString);
+
+        responseList = new ArrayList<>();
 
         badAnswerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,6 +144,8 @@ public class AnswerActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Utility.logUnanswered(mWatsonQueryString, responseList);
     }
 
     /**
@@ -298,6 +303,7 @@ public class AnswerActivity extends AppCompatActivity {
 
                 for (int i = 0; i < Math.min(NUM_RESPONSES_TO_DISPLAY, responses.size()); i++) {
                     String response = responses.get(i);
+                    responseList.add(response);
 
                     // Remove the (not necessarily relevant and very large) header on each answer
                     response = response.substring(response.indexOf("</h1>") + 6).replace("<span>\n</span>", "");

@@ -149,29 +149,32 @@
 
         <Button
             android:id="@+id/failure_rephrase_button"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
             android:text="@string/error_rephrase"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@android:color/white"
             android:visibility="gone" />
 
         <Button
             android:id="@+id/failure_view_popular_button"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
             android:text="@string/error_view_popular"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@android:color/white"
             android:visibility="gone" />
 
         <Button
             android:id="@+id/failure_search_site"
-            style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
             android:text="@string/error_search_site"
-            android:textColor="@color/colorPrimaryDark"
+            android:textColor="@android:color/white"
             android:visibility="gone" />
 
     </LinearLayout>
